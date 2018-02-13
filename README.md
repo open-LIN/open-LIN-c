@@ -20,3 +20,6 @@ Features:
 ## ToDo:
 
 This project just started, plenty of work needs to be done, any support is welcome.
+
+## Commercial licenses and support
+Support and commercial license options are provided by uCANDevices. Please contact ucandevices@mail.com for more details.
