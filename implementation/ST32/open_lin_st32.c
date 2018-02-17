@@ -35,7 +35,10 @@ void open_lin_frame_set_auto_baud(void)
 }
 
 void open_lin_hw_reset(void) {
-
+	if (HAL_LIN_Init(&huart1, UART_LINBREAKDETECTLENGTH_10B) != HAL_OK)
+	{
+	    _Error_Handler(__FILE__, __LINE__);
+	}
 }
 
 l_bool open_lin_hw_tx_byte(l_u8 byte){
@@ -63,10 +66,10 @@ l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len)
 
 }
 
-void open_lin_on_rx_frame(open_lin_frame_slot_t *slot)
-{
-
-}
+//void open_lin_on_rx_frame(open_lin_frame_slot_t *slot)
+//{
+//
+//}
 
 void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
 {

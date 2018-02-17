@@ -128,7 +128,7 @@ l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len){
 	return true;
 }
 
-TEST_CASE("valid frame reception, tx header", "[open_lin_slave]" ) {
+TEST_CASE("frame reception, tx header", "[open_lin_slave]" ) {
 	open_lin_slave_reset();
 	sim_break = true;
 	open_lin_slave_rx_header(0);
@@ -138,7 +138,17 @@ TEST_CASE("valid frame reception, tx header", "[open_lin_slave]" ) {
 	CHECK(tx_done == true);
 }
 
-TEST_CASE("valid frame reception, rx header invalid checksum", "[open_lin_slave]" ) {
+TEST_CASE("frame reception, rx header invalid parity", "[open_lin_slave]" ) {
+	open_lin_slave_init();
+	sim_break = true;
+	open_lin_slave_rx_header(0);
+	open_lin_slave_rx_header(0x55);
+	open_lin_slave_rx_header(0x93); // 0x01
+
+	CHECK (get_and_clear_sim_error() == OPEN_LIN_SLAVE_ERROR_PID_PARITY);
+}
+
+TEST_CASE("frame reception, rx header invalid checksum", "[open_lin_slave]" ) {
 	open_lin_slave_reset();
 	sim_break = true;
 	open_lin_slave_rx_header(0);
@@ -154,7 +164,7 @@ TEST_CASE("valid frame reception, rx header invalid checksum", "[open_lin_slave]
 	CHECK (get_and_clear_sim_error() == OPEN_LIN_SLAVE_ERROR_INVALID_CHECKSUM);
 }
 
-TEST_CASE("valid frame reception, rx header valid checksum", "[open_lin_slave]" )
+TEST_CASE("frame reception, rx header valid checksum", "[open_lin_slave]" )
 {
 	open_lin_slave_reset();
 	sim_break = true;

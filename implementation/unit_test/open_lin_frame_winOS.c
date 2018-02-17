@@ -75,3 +75,7 @@ void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
 {
 	last_rx_slot  = slot;
 }
+
+void open_lin_on_rx_frame(open_lin_frame_slot_t *slot){
+
+}

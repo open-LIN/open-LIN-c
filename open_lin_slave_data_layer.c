@@ -13,8 +13,6 @@
  * @brief Internal states definition
  */
 
-
-
 static t_open_lin_slave_state open_lin_slave_state;
 
 static l_u8 open_lin_slave_state_data_count;
@@ -54,6 +52,8 @@ void open_lin_slave_reset(void){
 void open_lin_slave_rx_header(l_u8 rx_byte)
 {
 	static t_open_lin_data_layer_frame open_lin_data_layer_frame;
+	static l_u8 open_lin_slave_data_buff[OPEN_LIN_MAX_FRAME_LENGTH];
+
 	if (open_lin_hw_check_for_break() == l_true)
 	{
 		if (open_lin_slave_state != OPEN_LIN_SLAVE_IDLE)
@@ -122,15 +122,16 @@ void open_lin_slave_rx_header(l_u8 rx_byte)
 			{
 				if (open_lin_slave_state_data_count < open_lin_data_layer_frame.lenght)
 				{
-					open_lin_data_layer_frame.data_ptr[open_lin_slave_state_data_count] = rx_byte;
+					open_lin_slave_data_buff[open_lin_slave_state_data_count] = rx_byte;
 					open_lin_slave_state_data_count ++;
 				} else
 				{
 					/* checksum calculation */
 					if (rx_byte == open_lin_data_layer_checksum(open_lin_data_layer_frame.pid,
-							open_lin_data_layer_frame.lenght, open_lin_data_layer_frame.data_ptr)) /* TODO remove from interrupt possible function */
+							open_lin_data_layer_frame.lenght, open_lin_slave_data_buff))
 					{
-						/* valid checksum */
+						/* valid checksum, copy frame from internal buffer*/
+						open_lin_memcpy(open_lin_data_layer_frame.data_ptr,open_lin_slave_data_buff,open_lin_data_layer_frame.lenght);
 						open_lin_net_rx_handler(open_lin_data_layer_frame.pid);
 					} else
 					{
