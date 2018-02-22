@@ -77,7 +77,7 @@ void RS232_flushRX(int);
 void RS232_flushTX(int);
 void RS232_flushRXTX(int);
 int RS232_GetPortnr(const char *);
-int RS232_WaitForBreak(int, unsigned char *, int, int *);
+int RS232_PollComportEx(int,unsigned char *, int, int *);
 void RS232_clearBreak(int);
 void RS232_setBreak(int);
 

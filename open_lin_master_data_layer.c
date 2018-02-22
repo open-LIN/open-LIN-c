@@ -71,7 +71,7 @@ l_bool open_lin_master_data_tx_header(open_lin_frame_slot_t  *slot)
 	l_bool result = l_true;
 	result = (open_lin_hw_tx_break()) && result;
 	result = (open_lin_hw_tx_byte(0x55)) && result;
-	result = (open_lin_hw_tx_byte(slot->pid)) && result;
+	result = (open_lin_hw_tx_byte(open_lin_data_layer_parity(slot->pid))) && result;
 	return result;
 }
 
@@ -138,6 +138,8 @@ void open_lin_master_dl_handler(l_u8 ms_passed)
 					} else
 					{
 						lin_master_state = OPEN_LIN_MASTER_DATA_RX;
+						master_rx_count = 0;
+						printf("MASTER RX SWITCH \n");
 					}
 				} else
 				{

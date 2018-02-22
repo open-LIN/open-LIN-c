@@ -12,7 +12,9 @@
 #include "rs232.h"
 #include <pthread.h>
 
-int cport_nr=4;        /* /dev/ttyS0 (COM5 on windows) */
+
+extern int cport_nr;
+
 unsigned char str[512] = {0};
 int send_index = 0;
 unsigned char gl_buf[4096] = {0};
@@ -21,7 +23,15 @@ pthread_t tid;
 
 void open_lin_error_handler(t_open_lin_error error_code)
 {
+	printf("Open-LIN err %d \n", error_code);
 	/* no error handling */
+}
+
+l_bool rx_enabled = false;
+
+void open_lin_set_rx_enabled(l_bool status)
+{
+	rx_enabled = status;
 }
 
 l_bool open_lin_hw_check_for_break(void)
@@ -33,7 +43,11 @@ l_bool open_lin_hw_check_for_break(void)
 }
 
 l_bool open_lin_hw_tx_break(void){
-
+	RS232_setBreak(cport_nr);
+//	Sleep(2);
+	RS232_clearBreak(cport_nr);
+//	open_lin_hw_tx_byte(0);
+	return TRUE;
 }
 
 void open_lin_frame_set_auto_baud(void)
@@ -60,30 +74,30 @@ void open_lin_hw_reset(void) {
 	RS232_flushRXTX(cport_nr);
 }
 
-open_lin_frame_slot_t* last_rx_slot;
-void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
-{
-	last_rx_slot  = slot;
-}
 
+
+extern void rx_byte_handle(uint8_t byte);
+
+static unsigned char buf[64];
 void *rxDataThread(void *vargp)
 {
-	unsigned char buf[64];
+
 	int size = sizeof(buf);
+	int out_break = 0;
+	int out_size = 0;
 
 	while (1)
 	{
-		int out_size = 0;
-		if(RS232_WaitForBreak(cport_nr,buf,size,&out_size)){
-			breakFlag = true;
-		} else{
-			breakFlag = false;
-		}
+		out_size = RS232_PollComportEx(cport_nr,buf,size,&out_break);
+		breakFlag = out_break;
+
+		printf("U > ");
 		for (int i = 0; i < out_size; i++)
 		{
-			open_lin_slave_rx_header(buf[i]);
+			rx_byte_handle(buf[i]);
+			printf(" %d ", buf[i]);
 		}
-		Sleep(10);
+		printf("\n");
 	}
 	return NULL;
 }

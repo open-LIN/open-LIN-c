@@ -24,6 +24,8 @@ l_bool open_lin_hw_check_for_break(void);
  */
 void open_lin_hw_reset(void);
 
+void open_lin_set_rx_enabled(l_bool status);
+
 void open_lin_hw_init(void);
 
 l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len);

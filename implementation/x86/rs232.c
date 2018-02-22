@@ -601,7 +601,7 @@ http://technet.microsoft.com/en-us/library/cc732236.aspx
                       0,                          /* no share  */
                       NULL,                       /* no security */
                       OPEN_EXISTING,
-                      0,                          /* no threads */
+					  FILE_FLAG_OVERLAPPED, 	/* no threads */
                       NULL);                      /* no templates */
 
   if(Cport[comport_number]==INVALID_HANDLE_VALUE)
@@ -662,15 +662,33 @@ int RS232_PollComport(int comport_number, unsigned char *buf, int size)
 
 int RS232_SendByte(int comport_number, unsigned char byte)
 {
-  int n;
+  OVERLAPPED osWrite = {0};
+  DWORD dwWritten;
+  DWORD dwRes;
+  BOOL fRes;
 
-  WriteFile(Cport[comport_number], &byte, 1, (LPDWORD)((void *)&n), NULL);
+  osWrite.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-  if(n<0)  return(1);
+	 if (!WriteFile(Cport[comport_number], &byte, 1, &dwWritten, &osWrite)) {
+	   // Write is pending.
+	   dwRes = WaitForSingleObject(osWrite.hEvent, INFINITE);
+	   switch(dwRes)
+	   {
+		   case WAIT_OBJECT_0:
+				fRes = TRUE;
+				break;
 
-  return(0);
+			  default:
+			   fRes = FALSE;
+			   break;
+		}
+	 }
+	 else
+		fRes = TRUE;
+
+	 CloseHandle(osWrite.hEvent);
+	 return fRes;
 }
-
 
 int RS232_SendBuf(int comport_number, unsigned char *buf, int size)
 {
@@ -728,44 +746,86 @@ int RS232_IsDSREnabled(int comport_number)
 
 void RS232_setBreak(int comport_number)
 {
-  EscapeCommFunction(Cport[comport_number], SETBREAK);
+	SetCommBreak(Cport[comport_number]);
+
+//  EscapeCommFunction(Cport[comport_number], SETBREAK);
 }
 
-int RS232_WaitForBreak(int comport_number, unsigned char *buf, int size, int *out_size){
+int RS232_PollComportEx(int comport_number, unsigned char *buf, int size, int *out_break){
 	int status;
-
+	int STATUS_CHECK_TIMEOUT = 5;   // Milliseconds
     COMSTAT comStat;
     DWORD   dwErrors;
+    DWORD      dwRes;
+    BOOL fWaitingOnStat = FALSE;
+    BOOL rxDone = FALSE;
+    DWORD dwOvRes;
+    int n = 0;
 	DWORD dwStoredFlags;
-	boolean fBREAK = FALSE;
+
+	OVERLAPPED osStatus = {0};
+	osStatus.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	dwStoredFlags = EV_BREAK | EV_RXFLAG | EV_RXCHAR;
 	SetCommMask(Cport[comport_number], dwStoredFlags);
 
-	WaitCommEvent(Cport[comport_number],(LPDWORD)((void *)&status),NULL);
-
-	ClearCommError(Cport[comport_number], &dwErrors, &comStat);
-
-	ReadFile(Cport[comport_number], buf, size, (LPDWORD)((void *)out_size), NULL);
-	fBREAK = dwErrors & CE_BREAK;
-
-	if (fBREAK)
+	while (TRUE)
 	{
-		return(1);
-	} else
-	{
-		return(0);
+		if (rxDone)
+		{
+			break;
+		}
+		if (!fWaitingOnStat) {
+		   // Issue read operation.
+		   if (!WaitCommEvent(Cport[comport_number],(LPDWORD)((void *)&status),&osStatus)) {
+	            if (GetLastError() == ERROR_IO_PENDING)
+	            	fWaitingOnStat = TRUE;
+	            else
+	               break; // error in WaitCommEvent; abort
+		   }
+		   else {
+				ClearCommError(Cport[comport_number], &dwErrors, &comStat);
+				ReadFile(Cport[comport_number], buf, size, (LPDWORD)((void *)&n), NULL);
+				(*out_break) = dwErrors & CE_BREAK;
+				fWaitingOnStat = FALSE;
+				rxDone = TRUE;
+
+			}
+		} else
+		{
+			if (fWaitingOnStat) {
+				 // Wait a little while for an event to occur.
+				 dwRes = WaitForSingleObject(osStatus.hEvent, STATUS_CHECK_TIMEOUT);
+				 switch(dwRes)
+				 {
+					 // Event occurred.
+					 case WAIT_OBJECT_0:
+						 GetOverlappedResult(Cport[comport_number], &osStatus, &dwOvRes, FALSE);
+						 ClearCommError(Cport[comport_number], &dwErrors, &comStat);
+						 ReadFile(Cport[comport_number], buf, size, (LPDWORD)((void *)&n), &osStatus);
+						 (*out_break) = dwErrors & CE_BREAK;
+						 rxDone = TRUE;
+						 fWaitingOnStat = FALSE;
+						 break;
+
+					 case WAIT_TIMEOUT:
+		//				                 Sleep(1);
+						 break;
+
+					 default:
+						 rxDone = TRUE;
+				 }
+			}
+		}
 	}
-
-
-
-//	if(status&EV_BREAK) return(1);
-//	  else return(0);
+    CloseHandle(osStatus.hEvent);
+	return(n);
 }
 
 void RS232_clearBreak(int comport_number)
 {
-  EscapeCommFunction(Cport[comport_number], CLRBREAK);
+  ClearCommBreak(Cport[comport_number]);
+//  EscapeCommFunction(Cport[comport_number], CLRBREAK);
 }
 
 
