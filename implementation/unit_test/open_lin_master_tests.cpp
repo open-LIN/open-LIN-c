@@ -35,14 +35,14 @@ TEST_CASE("init and work with one item table", "[open_lin_master]" ){
 	CHECK(get_last_tx_index() == 0);
 	open_lin_master_dl_handler(10);
 	CHECK(get_last_tx_index() == 3);
-	CHECK((get_last_tx()[2]) == 0x01); // check for PID
+	CHECK((get_last_tx()[2]) == 0xC1); // check for PID
 	open_lin_master_dl_handler(10);
 	CHECK(get_and_clear_sim_error() == OPEN_LIN_NO_ERROR);
 	open_lin_master_dl_handler(16);
 	CHECK(get_and_clear_sim_error() == OPEN_LIN_MASTER_ERROR_DATA_RX_TIMEOUT);
 	open_lin_master_dl_handler(11);
 	CHECK(get_last_tx_index() == 3);
-	CHECK((get_last_tx()[2]) == 0x01); // check for PID
+	CHECK((get_last_tx()[2]) == 0xC1); // check for PID
 }
 
 uint8_t master_data_buffer_tx_1[] = {0xAA,0xBB};

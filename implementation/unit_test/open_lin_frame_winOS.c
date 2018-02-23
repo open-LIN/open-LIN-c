@@ -17,6 +17,12 @@ t_open_lin_error get_and_clear_sim_error()
 	sim_handler_called = OPEN_LIN_NO_ERROR;
 	return res;
 }
+
+void open_lin_set_rx_enabled(l_bool v)
+{
+
+}
+
 void open_lin_error_handler(t_open_lin_error error_code)
 {
 	sim_handler_called = error_code;
