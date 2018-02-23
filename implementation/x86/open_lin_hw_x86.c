@@ -32,6 +32,7 @@ l_bool rx_enabled = false;
 void open_lin_set_rx_enabled(l_bool status)
 {
 	rx_enabled = status;
+	RS232_flushRX(cport_nr);
 }
 
 l_bool open_lin_hw_check_for_break(void)
@@ -73,11 +74,7 @@ l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len)
 void open_lin_hw_reset(void) {
 	RS232_flushRXTX(cport_nr);
 }
-
-
-
 extern void rx_byte_handle(uint8_t byte);
-
 static unsigned char buf[64];
 void *rxDataThread(void *vargp)
 {
@@ -88,16 +85,17 @@ void *rxDataThread(void *vargp)
 
 	while (1)
 	{
-		out_size = RS232_PollComportEx(cport_nr,buf,size,&out_break);
-		breakFlag = out_break;
-
-		printf("U > ");
-		for (int i = 0; i < out_size; i++)
+		if (rx_enabled == true)
 		{
-			rx_byte_handle(buf[i]);
-			printf(" %d ", buf[i]);
+			out_size = RS232_PollComportEx(cport_nr,buf,size,&out_break);
+			breakFlag = out_break;
+			for (int i = 0; i < out_size; i++)
+			{
+				rx_byte_handle(buf[i]);
+			}
+		} else {
+			Sleep(1);
 		}
-		printf("\n");
 	}
 	return NULL;
 }

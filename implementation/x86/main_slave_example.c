@@ -26,20 +26,21 @@ void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot){
 }
 
 void open_lin_on_rx_frame(open_lin_frame_slot_t *slot){
-	printf("frame received \n");
+	printf("frame received\n");
 }
 
 void rx_byte_handle(uint8_t byte)
 {
-	printf("L > %d \n",byte);
+//	printf("L > %d \n",byte);
 	open_lin_slave_rx_header(byte);
 }
 
 int main()
 {
-	printf("OPEN_LIN slave start \n");
+	printf("OPEN_LIN slave start\n");
 
 	open_lin_hw_init();
+	open_lin_set_rx_enabled(true);
 	open_lin_net_init(slot_array,lenght_of_slot_array);
 
 	while (1)

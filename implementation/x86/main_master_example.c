@@ -15,7 +15,7 @@ uint8_t master_data_buffer_tx_1[] = {0xAA,0xBB};
 uint8_t master_data_buffer_rx_1[8];
 const t_master_frame_table_item master_frame_table[] = {
 //		{10,0,{0x02,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(master_data_buffer_tx_1),master_data_buffer_tx_1}},
-		{100,100,{0x01,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(master_data_buffer_rx_1),master_data_buffer_rx_1}}
+		{25,25,{0x01,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(master_data_buffer_rx_1),master_data_buffer_rx_1}}
 };
 const uint8_t table_size = sizeof(master_frame_table)/sizeof(t_master_frame_table_item);
 
@@ -27,10 +27,10 @@ open_lin_frame_slot_t* last_rx_slot;
 void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
 {
 	last_rx_slot  = slot;
-	printf("Open-LIN master rx data");
+	printf("LIN(%d) >", slot->pid);
 	for (int i = 0; i < sizeof(master_data_buffer_rx_1); i++)
 	{
-		printf(" %d ",master_data_buffer_rx_1[i]);
+		printf("%d ",master_data_buffer_rx_1[i]);
 	}
 	printf("\n");
 
@@ -43,14 +43,14 @@ void rx_byte_handle(uint8_t byte)
 
 int main()
 {
-	printf("Open-LIN master example");
+	printf("Open-LIN master example\n");
 
 	open_lin_hw_init();
 	open_lin_master_dl_init((t_master_frame_table_item *)master_frame_table,table_size);
 
 	while (1)
 	{
-		Sleep(10);
+		Sleep(1);
 		open_lin_master_dl_handler(1);
 	}
 

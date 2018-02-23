@@ -139,7 +139,7 @@ void open_lin_master_dl_handler(l_u8 ms_passed)
 					{
 						lin_master_state = OPEN_LIN_MASTER_DATA_RX;
 						master_rx_count = 0;
-						printf("MASTER RX SWITCH \n");
+						open_lin_set_rx_enabled(true);
 					}
 				} else
 				{
@@ -155,6 +155,7 @@ void open_lin_master_dl_handler(l_u8 ms_passed)
 		{
 			case OPEN_LIN_MASTER_IDLE:
 			{
+				open_lin_set_rx_enabled(false);
 				/* do nothing */
 				break;
 			}

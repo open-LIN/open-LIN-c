@@ -809,7 +809,7 @@ int RS232_PollComportEx(int comport_number, unsigned char *buf, int size, int *o
 						 break;
 
 					 case WAIT_TIMEOUT:
-		//				                 Sleep(1);
+						 Sleep(1);
 						 break;
 
 					 default:
