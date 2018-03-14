@@ -5,7 +5,7 @@
  *      Author: ay7vi2
  */
 
-#include <open_lin_data_layer.h>
+#include "../../open_lin_data_layer.h"
 #include "../../open_lin_types.h"
 #include "../../open_lin_network_layer.h"
 #include "../../open_lin_hw.h"
@@ -13,7 +13,7 @@
 #include <stm32f0xx_hal.h>
 #include <stm32f0xx_hal_uart_ex.h>
 #include <stm32f0xx_hal_uart.h>
-
+#include <stm32f0xx.h>
 extern UART_HandleTypeDef huart1;
 
 void open_lin_error_handler(t_open_lin_error error_code)
@@ -25,7 +25,10 @@ l_bool open_lin_hw_check_for_break(void)
 {
 	l_bool result = __HAL_UART_GET_FLAG(&huart1,UART_FLAG_LBDF);
 	if (result == true)
+	{
 		__HAL_UART_CLEAR_FLAG(&huart1,UART_CLEAR_LBDF);
+	}
+
 	return result;
 }
 
@@ -33,11 +36,24 @@ void open_lin_frame_set_auto_baud(void)
 {
 	//	UART_AUTOBAUD_REQUEST
 }
-
+extern uint8_t Uart2RxFifo;
 void open_lin_hw_reset(void) {
-	if (HAL_LIN_Init(&huart1, UART_LINBREAKDETECTLENGTH_10B) != HAL_OK)
+	open_lin_hw_check_for_break();
+	HAL_LIN_Init(&huart1, UART_LINBREAKDETECTLENGTH_11B);
+	HAL_UART_Receive_IT(&huart1, &Uart2RxFifo, 1);
+    NVIC_EnableIRQ(USART1_IRQn);
+
+}
+
+
+void open_lin_set_rx_enabled(l_bool v)
+{
+	if (v == l_true)
 	{
-	    _Error_Handler(__FILE__, __LINE__);
+		open_lin_hw_reset();
+	} else
+	{
+		CLEAR_BIT(huart1.Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
 	}
 }
 
