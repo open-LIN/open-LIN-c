@@ -22,7 +22,16 @@ open_lin_pid_t open_lin_data_layer_parity(open_lin_pid_t pid) {
 open_lin_checksum_t open_lin_data_layer_checksum(open_lin_pid_t pid, l_u8 lenght, const l_u8* data_ptr)
 {
 	l_u8 i = 0;
-	l_u16 result = open_lin_data_layer_parity(pid);
+	l_u16 result;
+
+	/* diagnostic request have classic checksum */
+	if ((pid == OPEN_LIN_DIAG_REQUEST) || (pid == OPEN_LIN_DIAG_RESPONSE))
+	{
+		result = 0;
+	} else {
+		result = open_lin_data_layer_parity(pid);
+	}
+
 	for (i = 0; i < lenght; i++)
 	{
 		result += data_ptr[i];

@@ -27,6 +27,10 @@ typedef uint16_t l_u16;
 #define OPEN_LIN_P0_FLAG 6
 #define OPEN_LIN_P1_FLAG 7
 
+#define OPEN_LIN_DIAG_REQUEST 0x3C
+#define OPEN_LIN_DIAG_RESPONSE 0x3D
+
+
 #define open_lin_memcpy memcpy
 
 typedef l_u8 open_lin_pid_t;

@@ -15,11 +15,13 @@ extern void open_lin_frame_byte_process(l_u8 rx_byte);
 
 l_u8 dataBuffer1[] = {0,0,0,0};
 l_u8 dataBuffer2[] = {0,1,2,3,4,5,6,7};
+l_u8 dataBuffer3[] = {0,0,0};
 
 open_lin_frame_slot_t slot_array[] =
 {
 		{0x12,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(dataBuffer1),dataBuffer1},
-		{0x01,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(dataBuffer2),dataBuffer2}
+		{0x01,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(dataBuffer2),dataBuffer2},
+		{OPEN_LIN_DIAG_REQUEST,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(dataBuffer3),dataBuffer3}
 };
 
 const l_u8 lenght_of_slot_array = sizeof( slot_array ) / sizeof( open_lin_frame_slot_t );
@@ -163,6 +165,25 @@ TEST_CASE("frame reception, rx header invalid checksum", "[open_lin_slave]" ) {
 
 	CHECK (get_and_clear_sim_error() == OPEN_LIN_SLAVE_ERROR_INVALID_CHECKSUM);
 }
+
+TEST_CASE("diagnostic frame reception, rx header valid checksum", "[open_lin_slave]" ) {
+	open_lin_slave_reset();
+	sim_break = true;
+	open_lin_slave_rx_header(0);
+	open_lin_slave_rx_header(0x55);
+	open_lin_slave_rx_header(OPEN_LIN_DIAG_REQUEST);
+
+	open_lin_slave_rx_header(0x01);
+	open_lin_slave_rx_header(0x02);
+	open_lin_slave_rx_header(0x03);
+	open_lin_slave_rx_header(0xF9);
+
+
+	CHECK (get_and_clear_sim_error() == OPEN_LIN_NO_ERROR);
+//	CHECK(false);
+}
+
+
 
 TEST_CASE("frame reception, rx header valid checksum", "[open_lin_slave]" )
 {
