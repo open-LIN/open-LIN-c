@@ -18,6 +18,10 @@ void open_lin_net_init(open_lin_frame_slot_t *a_slot_array, l_u8 a_slot_array_le
 	open_lin_set_rx_enabled(true);
 }
 
+#ifdef OPEN_LIN_DYNAMIC_IDS
+
+#endif
+
 open_lin_frame_slot_t* open_lin_net_get_slot(open_lin_pid_t pid)
 {
 	open_lin_frame_slot_t *result = OPEN_LIN_NET_SLOT_EMPTY;

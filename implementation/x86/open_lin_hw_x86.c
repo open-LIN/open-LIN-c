@@ -45,7 +45,7 @@ l_bool open_lin_hw_check_for_break(void)
 
 l_bool open_lin_hw_tx_break(void){
 	RS232_setBreak(cport_nr);
-//	Sleep(2);
+	Sleep(2);
 	RS232_clearBreak(cport_nr);
 //	open_lin_hw_tx_byte(0);
 	return TRUE;

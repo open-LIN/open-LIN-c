@@ -7,14 +7,13 @@
 #include <stdio.h>
 #include <synchapi.h>
 
-int cport_nr=4;        /* /dev/ttyS0 (COM5 on windows) */
+int cport_nr=13;        /* /dev/ttyS0 (COM5 on windows) */
 
-uint8_t master_data_buffer_tx_1[] = {0xAA,0xBB};
-uint8_t master_data_buffer_rx_1[8];
+uint8_t master_data_buffer_tx_1[] = {0xAA};
+uint8_t master_data_buffer_rx_1[1];
 const t_master_frame_table_item master_frame_table[] = {
-		{10,1,{0x02,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(master_data_buffer_tx_1),master_data_buffer_tx_1}},
-		{10,1,{0x12,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(master_data_buffer_tx_1),master_data_buffer_tx_1}},
-		{25,25,{0x01,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(master_data_buffer_rx_1),master_data_buffer_rx_1}}
+		{10,1,{0x23,OPEN_LIN_FRAME_TYPE_TRANSMIT,sizeof(master_data_buffer_tx_1),master_data_buffer_tx_1}},
+		{25,25,{0x22,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(master_data_buffer_rx_1),master_data_buffer_rx_1}}
 };
 const uint8_t table_size = sizeof(master_frame_table)/sizeof(t_master_frame_table_item);
 
@@ -39,6 +38,7 @@ void rx_byte_handle(uint8_t byte)
 
 int main()
 {
+	setbuf(stdout, NULL);
 	printf("Open-LIN master example\n");
 
 	open_lin_hw_init();
