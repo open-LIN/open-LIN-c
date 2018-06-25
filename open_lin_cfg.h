@@ -15,7 +15,7 @@
 
 // #define OPEN_LIN_AUTO_BAUND
 #define OPEN_LIN_TRANSPORT_LAYER
-#define OPEN_LIN_DYNAMIC_IDS
+//#define OPEN_LIN_DYNAMIC_IDS
 
 
 #endif /* OPEN_LIN_OPEN_LIN_CFG_H_ */

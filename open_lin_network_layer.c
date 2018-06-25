@@ -6,6 +6,7 @@
  */
 
 #include "open_lin_network_layer.h"
+#include "open_lin_hw.h"
 
 static open_lin_frame_slot_t *slot_array;
 static l_u8 slot_array_len;
@@ -19,13 +20,26 @@ void open_lin_net_init(open_lin_frame_slot_t *a_slot_array, l_u8 a_slot_array_le
 }
 
 #ifdef OPEN_LIN_DYNAMIC_IDS
-
+	extern open_lin_id_translation_item_t open_lin_id_translation_tab[];
 #endif
 
 open_lin_frame_slot_t* open_lin_net_get_slot(open_lin_pid_t pid)
 {
 	open_lin_frame_slot_t *result = OPEN_LIN_NET_SLOT_EMPTY;
 	uint8_t i = 0;
+#ifdef OPEN_LIN_DYNAMIC_IDS
+	for(i = 0; i < (slot_array_len); i++)
+	{
+		if (open_lin_id_translation_tab[i].input_id == pid)
+		{
+			pid = open_lin_id_translation_tab[i].id_in_lin_table;
+			break;
+		} else
+		{
+			/* do nothing */
+		}
+	}
+#endif
 	for(i = 0; i < (slot_array_len); i++)
 	{
 		if (slot_array[i].pid == pid){
@@ -36,6 +50,7 @@ open_lin_frame_slot_t* open_lin_net_get_slot(open_lin_pid_t pid)
 			/* do nothing */
 		}
 	}
+
 	return result;
 };
 

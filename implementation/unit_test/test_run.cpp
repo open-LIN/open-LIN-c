@@ -24,6 +24,7 @@ open_lin_frame_slot_t slot_array[] =
 		{OPEN_LIN_DIAG_REQUEST,OPEN_LIN_FRAME_TYPE_RECEIVE,sizeof(dataBuffer3),dataBuffer3}
 };
 
+
 const l_u8 lenght_of_slot_array = sizeof( slot_array ) / sizeof( open_lin_frame_slot_t );
 
 
@@ -183,8 +184,6 @@ TEST_CASE("diagnostic frame reception, rx header valid checksum", "[open_lin_sla
 //	CHECK(false);
 }
 
-
-
 TEST_CASE("frame reception, rx header valid checksum", "[open_lin_slave]" )
 {
 	open_lin_slave_reset();
@@ -206,4 +205,38 @@ TEST_CASE("frame reception, rx header valid checksum", "[open_lin_slave]" )
 	CHECK(memcmp(dataBuffer1,e_dataBuffer1,sizeof(e_dataBuffer1)) == 0);
 }
 
+#ifdef OPEN_LIN_DYNAMIC_IDS
+	open_lin_id_translation_item_t open_lin_id_translation_tab[] = {
+			{0x12,0x12},
+			{0x01,0x01},
+			{OPEN_LIN_DIAG_REQUEST,OPEN_LIN_DIAG_REQUEST}
+	};
 
+TEST_CASE("dynamic id test", "[open_lin_slave]" )
+{
+	open_lin_id_translation_tab[0] = {0x12,0x22};
+	CHECK (get_and_clear_sim_error() == OPEN_LIN_NO_ERROR);
+
+	open_lin_slave_reset();
+	sim_break = true;
+	open_lin_slave_rx_header(0);
+	open_lin_slave_rx_header(0x55);
+	open_lin_slave_rx_header(0xe2); // 0x22
+
+	open_lin_slave_rx_header(0x00);
+	open_lin_slave_rx_header(0x01);
+	open_lin_slave_rx_header(0x02);
+	open_lin_slave_rx_header(0x03);
+	open_lin_slave_rx_header(0x17);
+
+	extern l_u8 dataBuffer1[4];
+	l_u8 e_dataBuffer1[4] = {0,1,2,3};
+	CHECK (get_and_clear_sim_error() == OPEN_LIN_NO_ERROR);
+
+	CHECK(memcmp(dataBuffer1,e_dataBuffer1,sizeof(e_dataBuffer1)) == 0);
+	CHECK (get_and_clear_sim_error() == OPEN_LIN_NO_ERROR);
+
+	open_lin_id_translation_tab[0] = {0x12,0x12};
+}
+
+#endif

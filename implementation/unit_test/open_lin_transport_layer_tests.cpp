@@ -19,7 +19,6 @@ extern "C"{
 open_lin_NAD_t open_lin_NAD = 0;
 uint16_t open_lin_supplier_id = 0x1234;
 uint16_t open_lin_function_id = 0x5678;
-
 }
 /* frame from Table 4.7 LIN spec 2.1 */
 uint8_t request_data_1[] = {OPEN_LIN_NAD_BROADCAST, 0x06,0xB0,0x12,0x34,0x56,0x78,0x34};
