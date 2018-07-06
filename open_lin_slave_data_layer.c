@@ -62,8 +62,12 @@ void open_lin_slave_rx_header(l_u8 rx_byte)
 		} else {
 			/* do nothing, go to SYNC rx anyway*/
 		}
+        #ifdef OPEN_LIN_HW_BREAK_IS_SYNCH_BYTE
+        open_lin_slave_state = OPEN_LIN_SLAVE_PID_RX;
+        #else
 		open_lin_slave_state = OPEN_LIN_SLAVE_SYNC_RX;
-		#ifdef OPEN_LIN_AUTO_BAUND
+        #endif
+        #ifdef OPEN_LIN_AUTO_BAUND
 			open_lin_hw_set_auto_baud();
 		#endif
 	} else
@@ -79,8 +83,8 @@ void open_lin_slave_rx_header(l_u8 rx_byte)
 				} else
 				{
 					open_lin_slave_state = OPEN_LIN_SLAVE_PID_RX;
-				}
-				break;
+                    break;
+				}				
 			}
 
 			case (OPEN_LIN_SLAVE_PID_RX):
