@@ -1,8 +1,8 @@
-/*
- * open_lin_slave_network_layer.h
- *
- *  Created on: 29.01.2018
- *      Author: ay7vi2
+/**
+ * @file open_lin_network_layer.h
+ * @author LJ
+ * @date 06.07.2018
+ * @brief Open LIN network layer
  */
 
 #ifndef OPEN_LIN_NETWORK_LAYER_H_

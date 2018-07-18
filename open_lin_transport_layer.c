@@ -11,6 +11,7 @@
 extern open_lin_NAD_t open_lin_NAD;
 extern l_u16 open_lin_supplier_id;
 extern l_u16 open_lin_function_id;
+extern void open_lin_sid_callback(open_lin_frame_slot_t* slot);
 
 typedef struct {
 	open_lin_SID_t sid;
@@ -21,6 +22,7 @@ typedef struct {
 /* static function definitions */
 static void open_lin_assign_nad_handler(open_lin_frame_slot_t* slot);
 
+/* static service handlers */
 t_open_lin_sid_handler_item open_lin_sid_handlers[] = {
 		{OPEN_LIN_SID_ASSIGN_NAD,open_lin_assign_nad_handler}
 };
@@ -63,6 +65,7 @@ static void open_lin_transport_layer_request_handling(open_lin_frame_slot_t* slo
 					{
 						/* call handler */
 						open_lin_sid_handlers[i].handler(slot);
+                        open_lin_sid_callback(slot);
 					} else {
 						/* do nothing, go to next handler */
 					}
