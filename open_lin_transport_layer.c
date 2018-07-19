@@ -65,7 +65,7 @@ static void open_lin_transport_layer_request_handling(open_lin_frame_slot_t* slo
 					{
 						/* call handler */
 						open_lin_sid_handlers[i].handler(slot);
-                        open_lin_sid_callback(slot);
+                        open_lin_sid_callback(slot); 
 					} else {
 						/* do nothing, go to next handler */
 					}
@@ -77,6 +77,10 @@ static void open_lin_transport_layer_request_handling(open_lin_frame_slot_t* slo
 		break;
 		/* TODO implement segmentation*/
 		default:
+        #ifdef __XC8 /* welcome to beautiful world of XC8 compilers, -- compiler bug*/
+            t_request->pci.PCI_type ++;
+            t_request->pci.PCI_type --;
+        #endif
 			/* unknown pci type */
 		break;
 	}
