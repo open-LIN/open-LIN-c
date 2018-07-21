@@ -32,8 +32,8 @@
 #define LIN_SetInterruptHandler TMR0_SetInterruptHandler
 
 open_lin_NAD_t open_lin_NAD = 0;
-uint16_t open_lin_supplier_id = 0x1234;
-uint16_t open_lin_function_id = 0x5678;
+uint16_t open_lin_supplier_id = 0x0;
+uint16_t open_lin_function_id = 0x0;
 
 void open_lin_error_handler(t_open_lin_error error_code)
 {

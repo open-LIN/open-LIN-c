@@ -27,18 +27,27 @@ open_lin_frame_slot_t* open_lin_net_get_slot(open_lin_pid_t pid)
 {
 	open_lin_frame_slot_t *result = OPEN_LIN_NET_SLOT_EMPTY;
 	uint8_t i = 0;
+    
 #ifdef OPEN_LIN_DYNAMIC_IDS
+    uint8_t translate_found = 0; 
 	for(i = 0; i < (slot_array_len); i++)
 	{
 		if (open_lin_id_translation_tab[i].input_id == pid)
 		{
 			pid = open_lin_id_translation_tab[i].id_in_lin_table;
+            translate_found = 1;
 			break;
 		} else
 		{
 			/* do nothing */
 		}
 	}
+    if (translate_found == 0)
+    {
+        return result; /* MISRA violation */
+    } else {
+        /* do nothing */
+    }
 #endif
 	for(i = 0; i < (slot_array_len); i++)
 	{
