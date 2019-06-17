@@ -9,7 +9,6 @@
 #include "../../open_lin_types.h"
 #include "../../open_lin_network_layer.h"
 #include "../../open_lin_hw.h"
-#include "../../../../Src/slcan.h"
 #include <stm32f0xx_hal.h>
 #include <stm32f0xx_hal_uart_ex.h>
 #include <stm32f0xx_hal_uart.h>
@@ -73,7 +72,7 @@ l_bool open_lin_hw_tx_break(void){
 
 l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len)
 {
-	if (HAL_UART_Transmit(&huart1,data,len,1000))
+	if (HAL_UART_Transmit(&huart1,data,len,1000) == HAL_OK)
 		return true;
 	else
 		return false;
@@ -89,5 +88,5 @@ l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len)
 
 void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
 {
-	slcanReciveCanFrame(slot);
+//	slcanReciveCanFrame(slot);
 }
