@@ -10,6 +10,8 @@
 
 #include "open_lin_types.h"
 #include "open_lin_network_layer.h"
+
+
 typedef struct {
 	uint8_t offset_ms;
 	uint8_t response_wait_ms;

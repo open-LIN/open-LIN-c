@@ -7,12 +7,14 @@
 
 #include "open_lin_network_layer.h"
 #include "open_lin_hw.h"
+#include "open_lin_master_data_layer.h"
 
-static open_lin_frame_slot_t *slot_array;
+
+static t_master_frame_table_item* slot_array;
 static l_u8 slot_array_len;
 
 
-void open_lin_net_init(open_lin_frame_slot_t *a_slot_array, l_u8 a_slot_array_len)
+void open_lin_net_init(t_master_frame_table_item *a_slot_array, l_u8 a_slot_array_len)
 {
 	slot_array = a_slot_array;
 	slot_array_len = a_slot_array_len;
@@ -51,8 +53,8 @@ open_lin_frame_slot_t* open_lin_net_get_slot(open_lin_pid_t pid)
 #endif
 	for(i = 0; i < (slot_array_len); i++)
 	{
-		if (slot_array[i].pid == pid){
-			result = &slot_array[i];
+		if (slot_array[i].slot.pid == pid){
+			result = &slot_array[i].slot;
 			break;
 		} else
 		{

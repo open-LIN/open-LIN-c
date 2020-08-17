@@ -117,18 +117,28 @@ l_bool open_lin_master_dl_rx(l_u8 rx_byte)
 	return pending;
 }
 
+l_u8 diagnostic_slot = 0;
 
 void open_lin_master_dl_handler(l_u8 ms_passed)
 {
 	t_master_frame_table_item* master_table_item = get_current_item();
-
 	if (master_frame_table_size > 0u)
 	{
+		if ((master_table_item->slot.pid == OPEN_LIN_DIAG_REQUEST) || (master_table_item->slot.pid == OPEN_LIN_DIAG_RESPONSE) )
+		{
+			if (diagnostic_slot == 0)
+			{
+				data_layer_next_item();
+				master_table_item = get_current_item();
+			}
+		}
 		time_passed_since_last_frame_ms += ms_passed;
 		if (lin_master_state == OPEN_LIN_MASTER_IDLE)
 		{
 			if ((master_table_item->offset_ms) < time_passed_since_last_frame_ms)
 			{
+				if ((master_table_item->slot.pid == OPEN_LIN_DIAG_REQUEST) || (master_table_item->slot.pid == OPEN_LIN_DIAG_RESPONSE) )
+					diagnostic_slot = 0;
 				time_passed_since_last_frame_ms = 0;
 				if (open_lin_master_data_tx_header(&master_table_item->slot) == l_true)
 				{

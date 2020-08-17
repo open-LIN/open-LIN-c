@@ -32,9 +32,9 @@ l_bool open_lin_hw_check_for_break(void)
 	return result;
 }
 
-void open_lin_frame_set_auto_baud(void)
+void open_lin_hw_set_auto_baud(void)
 {
-	//	UART_AUTOBAUD_REQUEST
+	huart1.Instance->RQR = UART_AUTOBAUD_REQUEST;
 }
 extern uint8_t Uart2RxFifo;
 void open_lin_hw_reset(void) {
@@ -73,7 +73,7 @@ l_bool open_lin_hw_tx_break(void){
 
 l_bool open_lin_hw_tx_data(l_u8* data, l_u8 len)
 {
-	if (HAL_UART_Transmit(&huart1,data,len,1000))
+	if (HAL_UART_Transmit(&huart1,data,len,1000) == HAL_OK)
 		return true;
 	else
 		return false;

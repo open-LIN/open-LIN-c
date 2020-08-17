@@ -39,6 +39,7 @@ l_bool open_lin_hw_tx_byte(l_u8 data);
  * @brief Starts auto baud procedure
  *
  */
+
 void open_lin_hw_set_auto_baud(void);
 
 #endif /* OPEN_LIN_AUTO_BAUND */
