@@ -19,7 +19,7 @@ Features:
 
 ## ToDo:
 
-This project just started, plenty of work needs to be done, any support is welcome.
+This project just started, plenty of work needs to be done, any support is welcome. For Documentation see [product-map](https://product-map.ai/app/8779b09e0916477fbd8130e61fd7af6b) or exported version [product-map-export](https://github.com/open-LIN/open-LIN-c/releases/download/doc1/Code.Feature.Hierarchy.open-LIN-c.pdf)
 
 ## Commercial support
 Support can be provided by uCANDevices. Please contact ucandevices@mail.com for more details.
