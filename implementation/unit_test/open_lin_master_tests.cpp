@@ -1,12 +1,14 @@
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+
 #include "catch.hpp"
 
 extern "C"{
 
-#include "../../open_lin_cfg.h"
-#include "../../open_lin_data_layer.h"
-#include "../../open_lin_hw.h"
-#include "../../open_lin_network_layer.h"
-#include "../../open_lin_master_data_layer.h"
+#include "open_lin_cfg.h"
+#include "open_lin_data_layer.h"
+#include "open_lin_hw.h"
+#include "open_lin_network_layer.h"
+#include "open_lin_master_data_layer.h"
 
 extern uint8_t* get_last_tx();
 extern uint8_t get_last_tx_index();

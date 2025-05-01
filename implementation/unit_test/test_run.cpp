@@ -1,14 +1,13 @@
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 #include "iostream"
 
 extern "C"{
 
-#include "../../open_lin_cfg.h"
-#include "../../open_lin_data_layer.h"
-#include "../../open_lin_slave_data_layer.h"
-#include "../../open_lin_hw.h"
-#include "../../open_lin_network_layer.h"
+#include "open_lin_cfg.h"
+#include "open_lin_data_layer.h"
+#include "open_lin_slave_data_layer.h"
+#include "open_lin_hw.h"
+#include "open_lin_network_layer.h"
 
 extern l_u8 open_lin_frame_parity(l_u8 pid);
 extern void open_lin_frame_byte_process(l_u8 rx_byte);

@@ -12,9 +12,9 @@
 
 extern "C"{
 
-#include "../../open_lin_cfg.h"
-#include "../../open_lin_master_data_layer.h"
-#include "../../open_lin_transport_layer.h"
+#include "open_lin_cfg.h"
+#include "open_lin_master_data_layer.h"
+#include "open_lin_transport_layer.h"
 
 open_lin_NAD_t open_lin_NAD = 0;
 uint16_t open_lin_supplier_id = 0x1234;

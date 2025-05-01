@@ -4,10 +4,12 @@
  *  Created on: 25.01.2018
  *      Author: ay7vi2
  */
-#include "../../open_lin_cfg.h"
-#include "../../open_lin_data_layer.h"
-#include "../../open_lin_hw.h"
-#include "../../open_lin_network_layer.h"
+extern "C"{
+
+#include "open_lin_cfg.h"
+#include "open_lin_data_layer.h"
+#include "open_lin_hw.h"
+#include "open_lin_network_layer.h"
 
 t_open_lin_error sim_handler_called = OPEN_LIN_NO_ERROR;
 
@@ -83,5 +85,12 @@ void open_lin_master_dl_rx_callback(open_lin_frame_slot_t* slot)
 }
 
 void open_lin_on_rx_frame(open_lin_frame_slot_t *slot){
+
+}
+
+void open_lin_sid_callback(open_lin_frame_slot_t* slot)
+{
+
+}
 
 }

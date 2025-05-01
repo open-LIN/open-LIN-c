@@ -1,0 +1,43 @@
+# Build directories and artifacts
+build/
+lib/
+implementation/build/
+implementation/lib/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+test_runner
+
+# Test artifacts
+*.gcno
+*.gcda
+*.gcov
+*.dSYM/
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependency files
+*.d
+
+
+# Debug and profiling files
+gmon.out
+callgrind.out*
+perf.data*
+
+# Generated documentation
+doc/html/
+doc/latex/
+
+# Backup files
+*.bak
+*.ba
