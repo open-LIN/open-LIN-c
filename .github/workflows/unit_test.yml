@@ -1,0 +1,31 @@
+name: unit_test
+
+on:
+  push:
+    branches: [ "add_make" ]
+  pull_request:
+    branches: [ "add_make" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential lcov
+    - name: Build project 
+      working-directory: implementation
+      run: make test
+    - name: make test
+      working-directory: implementation
+      run: make test
+    - name: make run unit tests
+      working-directory: implementation
+      run: make coverage
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: implementation/build/coverage_report

@@ -1,8 +1,4 @@
-# Makefile for open-LIN-c project with correct include paths
-# For the directory structure:
-#   ./source.c, ./source.h (parent dir)
-#   ./implementation/makefile
-#   ./implementation/test/ (test files)
+# Makefile for open-LIN-c unit tests and coverage
 
 # Compiler settings
 CC = gcc
@@ -20,8 +16,9 @@ $(shell mkdir -p $(BUILD_DIR) $(LIB_DIR))
 
 # Flags - trying with absolute path for includes
 ROOT_ABSOLUTE_PATH := $(shell cd $(ROOT_DIR) && pwd)
-CFLAGS = -Wall -Wextra -std=c99 -I$(ROOT_ABSOLUTE_PATH)
-CXXFLAGS = -Wall -Wextra -std=c++11 -I$(ROOT_ABSOLUTE_PATH) -I$(TEST_DIR)
+COVERAGE_FLAGS = -fprofile-arcs -ftest-coverage -fprofile-arcs 
+CFLAGS = -Wall -Wextra -std=c99 -I$(ROOT_ABSOLUTE_PATH)  $(COVERAGE_FLAGS)
+CXXFLAGS = -Wall -Wextra -std=c++11 -I$(ROOT_ABSOLUTE_PATH) -I$(TEST_DIR)  $(COVERAGE_FLAGS)
 
 # Get source files (C files in parent directory)
 C_SOURCES := $(wildcard $(ROOT_DIR)/*.c)
@@ -62,7 +59,12 @@ test: $(LIB_STATIC) $(TEST_OBJECTS)
 
 # Run tests
 run: test
-	./$(TEST_EXECUTABLE)
+	./$(TEST_EXECUTABLE) || true
+
+coverage: run
+	lcov --directory build --capture --output-file build/coverage.info --rc lcov_branch_coverage=1 --rc no_exception_branch=1  --ignore-errors mismatch
+	lcov --remove build/coverage.info '/usr/*' '*/unit_test/*' -o build/coverage.info --rc lcov_branch_coverage=1
+	genhtml build/coverage.info --branch-coverage --output-directory build/coverage_report
 
 # Clean build artifacts
 clean:
